@@ -1,0 +1,96 @@
+#include <graphics.h>
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+
+int main(){
+
+    int x=1848, y=72, colore=0,i,coloreselezionato,x2,y2,y3,x3,k,y_retta;
+    initwindow(1920,1080);
+    srand(time(NULL));
+    setcolor(15);
+    rectangle(1848,0,1919,1079);
+    for(i=0;i<15;i++){
+
+        line(x,y,x+72,y);
+        y+=72;
+
+    }
+
+    x=1850;
+    y=2;
+
+    for(i=0;i<15;i++){
+        colore++;
+        setfillstyle(1,colore);
+        floodfill(x,y,15);
+        y+=72;
+    }
+    while(1){
+        while(ismouseclick(WM_LBUTTONDOWN)==false){
+            delay(50);
+        }
+        getmouseclick(WM_LBUTTONDOWN,x,y);
+        if(x>1848){
+            coloreselezionato=(y/72)+1;
+            setcolor(coloreselezionato);
+        }
+        else{
+            line(x=rand()%1839,y=rand()%1079,x2=rand()%1839,y2=rand()%1079);
+            delay(1000);
+            float m=(float)(y2-y)/(x2-x);
+            float q=y-m * x;
+            for(k=0;k<1839;k++){
+                y_retta=m*k+q;
+                putpixel(k,y_retta,coloreselezionato);
+            }
+            delay(1000);
+            line(x2,y2,x3=rand()%1839,y3=rand()%1079);
+            line(x3,y3,x,y);
+            float m2=(float)(y3-y2)/(x3-x2);
+            float q2=y2-m2 *x2;
+            for(k=0;k<1839;k++){
+                y_retta=m2*k+q2;
+                putpixel(k,y_retta,coloreselezionato);
+            }
+            float m3=(float)(y3-y)/(x3-x);
+            float q3=y3-m3 *x3;
+            for(k=0;k<1839;k++){
+                y_retta=m3*k+q3;
+                putpixel(k,y_retta,coloreselezionato);
+            }
+            delay(1000);
+            float dist_bc=sqrt(pow(x-x2,2)+pow(y-y2,2));
+            float dist_ca=sqrt(pow(x-x3,2)+pow(y-y3,2));
+            float dist_ab=sqrt(pow(x2-x3,2)+ pow(y2-y3,2));
+            //erone
+            float p=(dist_bc+dist_ca+dist_ab)/2;
+            float A=sqrt(p*(p-dist_bc)*(p-dist_ca)*(p-dist_ab));
+            printf("%f\n",A);
+            //incentro
+            float incentro_x=(dist_bc*x+dist_ca*x2+dist_ab*x3)/(dist_bc+dist_ca+dist_ab);
+            float incentro_y =(dist_bc *y +dist_ca *y2 +dist_ab *y3)/(dist_bc + dist_ca + dist_ab);
+            //putpixel((int)incentro_x,(int)incentro_y, coloreselezionato);
+            delay(2000);
+            setfillstyle(1,coloreselezionato);
+            floodfill((int)incentro_x-1,(int)incentro_y,coloreselezionato);
+            delay(2000);
+            setfillstyle(1,0);
+            floodfill(1,1,15);
+            if(coloreselezionato==15){
+                setcolor(14);
+                line(1848,0,1848,1080);
+                setfillstyle(1,0);
+                floodfill(1,1,14);
+                setcolor(15);
+                line(1848,0,1848,1080);
+            }
+            else{
+                setfillstyle(1,0);
+                floodfill(1,1,15);
+            }
+        }
+    }
+}
