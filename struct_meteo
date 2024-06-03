@@ -1,0 +1,120 @@
+/*Devi far inserire una serie di rilevamenti di temperature
+registrate nelle città italiane.
+Ogni rilevamento è composto da 3 dati:
+ nome città
+ prima temperatura
+ seconda temperatura
+L’inserimento termina con il nome di città vuoto, e termina
+comunque dopo 20 rilevamenti. La stessa città non può avere più
+di un rilevamento (estensione facoltativa: non fidarti dell’utente e
+controlla che effettivamente sia così).
+Devi mandare a video due tabelloni: il primo con ogni nome di
+città abbinato alla sua temperatura minima, il secondo con ogni
+nome di città abbinato alla sua temperatura massima. Entrambi i
+tabelloni devono essere in ordine di temperatura crescente.*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <string.h>
+
+struct meteo{
+
+    char citta[20];
+    int tempmin;
+    int tempmax;
+
+};
+
+int main(void){
+
+    struct meteo tabellone[20];
+    struct meteo appoggio;
+    char temp[20];
+    int uscita=0,cnt=0,i=0,frontiera,scambi,exit=0;
+
+    do{
+        printf("\nInserisci il nome della citta': ");
+        gets(temp);
+        while(i<cnt && exit!=1){
+            if(strcmp(temp,tabellone[i].citta)==0){
+                exit=1;
+            }
+            i++;
+        }
+        if(exit==1){
+            printf("\nReinserisci il nome della citta': ");
+            gets(temp);
+        }
+        if(strlen(temp)!=0){
+            strcpy(tabellone[cnt].citta,temp);
+            printf("\nInserisci la temperatura minima: ");
+            scanf("%d",&tabellone[cnt].tempmin);
+            fflush(stdin);
+            printf("\nInserisci la temperatura massima: ");
+            scanf("%d",&tabellone[cnt].tempmax);
+            fflush(stdin);
+            if(tabellone[cnt].tempmin>tabellone[cnt].tempmax){
+                printf("\nReinserisci la temperatura minima: ");
+                scanf("%d",&tabellone[cnt].tempmin);
+                fflush(stdin);
+                printf("\nReinserisci la temperatura massima: ");
+                scanf("%d",&tabellone[cnt].tempmax);
+                fflush(stdin);
+            }
+            cnt++;
+        }
+        else{
+            uscita=1;
+        }
+
+
+    }while(uscita!=1&&cnt<20);
+    frontiera=cnt;
+    scambi=0;
+    do{
+        scambi=0;
+        for(i=0;i<frontiera-1;i++){
+            if(tabellone[i].tempmin>tabellone[i+1].tempmin){
+                appoggio=tabellone[i];
+                tabellone[i]=tabellone[i+1];
+                tabellone[i+1]=appoggio;
+                scambi++;
+            }
+
+        }
+        frontiera--;
+
+    }while(scambi!=0);
+
+    for(i=0;i<cnt;i++){
+        printf("\n%s ",tabellone[i].citta);
+        printf("%d",tabellone[i].tempmin);
+    }
+    printf("\n**************************************************************************\n");
+    frontiera=cnt;
+    scambi=0;
+    do{
+        scambi=0;
+        for(i=0;i<frontiera-1;i++){
+            if(tabellone[i].tempmax>tabellone[i+1].tempmax){
+                appoggio=tabellone[i];
+                tabellone[i]=tabellone[i+1];
+                tabellone[i+1]=appoggio;
+                scambi++;
+            }
+
+        }
+        frontiera--;
+
+    }while(scambi!=0);
+
+    for(i=0;i<cnt;i++){
+        printf("\n%s ",tabellone[i].citta);
+        printf("%d",tabellone[i].tempmax);
+    }
+    return 0;
+
+}
