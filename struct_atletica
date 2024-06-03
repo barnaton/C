@@ -1,0 +1,85 @@
+/*Fate inserire i tempi di una gara di atletica, dove gareggiano insieme
+maschi e femmine.
+Per ogni atleta fate inserire: il suo nome, se è maschio o femmina, il suo
+tempo in secondi.
+L’inserimento termina con il nome vuoto (che non va considerato) e
+termina comunque dopo 10 atleti.
+Dovete mandare a video:
+La classifica maschile, quella femminile e quella con tutti gli atleti. Ogni
+classifica riporta nome atleta e tempo, in ordine di tempo crescente.*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <string.h>
+
+struct atleta{
+    char nome[20];
+    char genere;
+    float tempo;
+};
+
+int main(void){
+
+    struct atleta tabella[20];
+    struct atleta appoggio;
+    int uscita=0,cnt=0,gen;
+    char temp[20];
+    do{
+        printf("\nInserisci nome atleta: ");
+        gets(temp);
+        if(strlen(temp)!=0){
+            strcpy(tabella[cnt].nome,temp);
+            printf("\nInserisci m se sei maschio e f se sei femmina: ");
+            scanf("%c",&tabella[cnt].genere);
+            fflush(stdin);
+            printf("\nInserisci il tempo in secondi: ");
+            scanf("%f",&tabella[cnt].tempo);
+            fflush(stdin);
+            cnt++;
+        }
+        else{
+            uscita++;
+        }
+
+
+    }while(uscita!=1&&cnt<10);
+    int scambi=0,i;
+    int frontiera=cnt;
+
+    do{
+        scambi=0;
+        for(i=0;i<frontiera-1;i++){
+            if(tabella[i].tempo>tabella[i+1].tempo){
+                appoggio=tabella[i];
+                tabella[i]=tabella[i+1];
+                tabella[i+1]=appoggio;
+                scambi++;
+            }
+
+        }
+        frontiera--;
+
+    }while(scambi!=0);
+
+    for(i=0;i<cnt;i++){
+        if(tabella[i].genere=='m'){
+            printf("\n%s ",tabella[i].nome);
+            printf("%f",tabella[i].tempo);
+        }
+    }
+    printf("\n*****************************************************************************");
+    for(i=0;i<cnt;i++){
+        if(tabella[i].genere=='f'){
+            printf("\n%s ",tabella[i].nome);
+            printf("%f",tabella[i].tempo);
+        }
+    }
+    printf("\n*****************************************************************************");
+    for(i=0;i<cnt;i++){
+        printf("\n%s ",tabella[i].nome);
+        printf("%f",tabella[i].tempo);
+    }
+
+}
