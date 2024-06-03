@@ -1,0 +1,172 @@
+/*Dovete creare un menu per la gestione del file PHONE1000.DAT. Il file ha tracciato
+• Nome   string[10]
+• NumeroTelefono    string[10]
+Il file ha al massimo 1000 righe ed è ordinato per Nome.
+Il menu ha le seguenti opzioni:
+1. Mostrare il contenuto di PHONE1000.DAT ordinato per Nome
+2. Mostrare il contenuto di PHONE1000.DAT ordinato per Numero
+3. Inserito un Nome, trovare il Numero corrispondente
+4. Inserito un Numero, trovare il nome corrispondente
+5. Inserire una nuova coppia Nome+Numero sul file
+6. Uscire
+ATTENZIONE: l’utente può scegliere le opzioni nell’ordine che preferisce, e può ripetere più volte la stessa opzione.*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <string.h>
+
+struct utente{
+    char Nome[10];
+    char NumeroTelefono[10];
+};
+
+int main(void){
+
+    FILE *f;
+    int scelta=0,cnt=0,scambi=0,i,trovato=0,frontiera;
+    char temp[10];
+    struct utente tabellone[1000];
+    struct utente numeri[1000];
+    struct utente appoggio;
+    f=fopen("PHONE1000.DAT","rb");
+    while(feof(f)==0)
+    {
+        fread(&tabellone[cnt],sizeof(struct utente),1,f);
+        numeri[cnt]=tabellone[cnt];
+
+        if(feof(f)==0){
+            cnt++;
+        }
+    }
+    fclose(f);
+    frontiera=cnt;
+    do{
+        scambi=0;
+        for(i=0;i<frontiera-1;i++){
+            if(strcmp(numeri[i].NumeroTelefono,numeri[i+1].NumeroTelefono)>0){
+                appoggio=numeri[i];
+                numeri[i]=numeri[i+1];
+                numeri[i+1]=appoggio;
+                scambi++;
+            }
+
+        }
+        frontiera--;
+
+    }while(scambi!=0);
+
+    while(scelta!=6){
+        printf("Mostrare il contenuto di PHONE1000.DAT ordinato per Nome ===> 1\n");
+        printf("Mostrare il contenuto di PHONE1000.DAT ordinato per Numero ===> 2\n");
+        printf("Inserito un Nome, trovare il Numero corrispondente ===> 3\n");
+        printf("Inserito un Numero, trovare il nome corrispondente ===> 4\n");
+        printf("Inserire una nuova coppia Nome+Numero sul file ===> 5\n");
+        printf("Uscire ===> 6\n");
+        printf("\nInserisci un valore: ");
+        scanf("%d",&scelta);
+        fflush(stdin);
+        if(scelta==1){
+            for(i=0;i<cnt;i++){
+                printf("%s %s\n",tabellone[i].Nome,tabellone[i].NumeroTelefono);
+            }
+
+        }
+        if(scelta==2){
+            for(i=0;i<cnt;i++){
+                printf("%s %s\n",numeri[i].Nome,numeri[i].NumeroTelefono);
+            }
+        }
+
+        if(scelta==3){
+            i=0;
+            printf("\nInserisci un nome: ");
+            gets(temp);
+            trovato=0;
+            while(trovato!=1&& i<cnt){
+                if(strcmp(temp,tabellone[i].Nome)==0){
+                    puts(tabellone[i].NumeroTelefono);
+                    trovato=1;
+                }
+                else{
+                    i++;
+                }
+            }
+            if(trovato==0){
+                printf("\nNome non trovato\n");
+            }
+
+        }
+
+        if(scelta==4){
+            i=0;
+            printf("\nInserisci un numero: ");
+            gets(temp);
+            trovato=0;
+            while(trovato!=1 && i<cnt){
+                if(strcmp(temp,tabellone[i].NumeroTelefono)==0){
+                    puts(tabellone[i].Nome);
+                    trovato++;
+                }
+                else{
+                    i++;
+                }
+            }
+            if(trovato==0){
+                printf("\nNumero non trovato\n");
+            }
+
+        }
+
+        if(scelta==5){
+            printf("\nInserisci un nome: ");
+            gets(appoggio.Nome);
+            printf("\nInserisci un numero: ");
+            gets(appoggio.NumeroTelefono);
+            tabellone[cnt]=appoggio;
+            numeri[cnt]=appoggio;
+            cnt++;
+            frontiera=cnt;
+            do{
+                scambi=0;
+                for(i=0;i<frontiera-1;i++){
+                    if(strcmp(tabellone[i].Nome,tabellone[i+1].Nome)>0){
+                        appoggio=tabellone[i];
+                        tabellone[i]=tabellone[i+1];
+                        tabellone[i+1]=appoggio;
+                        scambi++;
+                    }
+                }
+                frontiera--;
+            }while(scambi!=0);
+            frontiera=cnt;
+            do{
+                scambi=0;
+                for(i=0;i<frontiera-1;i++){
+                    if(strcmp(numeri[i].NumeroTelefono,numeri[i+1].NumeroTelefono)>0){
+                        appoggio=numeri[i];
+                        numeri[i]=numeri[i+1];
+                        numeri[i+1]=appoggio;
+                        scambi++;
+                    }
+                }
+                frontiera--;
+            }while(scambi!=0);
+            f=fopen("PHONE1000.DAT","wb");
+            for(i=0;i<cnt;i++){
+                fwrite(&tabellone[i],sizeof(struct utente),1,f);
+            }
+            fclose(f);
+
+
+        }
+        if(scelta>6 || scelta<1){
+            printf("Hai inserito un valore non valido\n");
+        }
+    }
+
+    return 0;
+
+
+}
