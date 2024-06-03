@@ -1,0 +1,129 @@
+//riconoscimento persona con password (lunghezza massima 20) (se un timbro non è ancora stato inserito chiedere l'inserimento e creare un nuovo utente)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct utenti{
+
+    char nome[20];
+    char password[20];
+
+};
+
+
+int main(void){
+
+    char passwordadmin[20];
+    strcpy(passwordadmin,"Pearl Jam");
+
+    FILE *f;
+    int scelta,cnt=0,i=0,uscita=0,frontiera,scambi=0;
+    struct utenti tabellone[100];
+    struct utenti appoggio;
+    char temp[20];
+    f=fopen("timbri.txt","rb");
+    while(feof(f)==0){
+        fread(&tabellone[cnt],sizeof(struct utenti),1,f);
+        if(feof(f)==0){
+            cnt++;
+        }
+    }
+    fclose(f);
+    while(scelta!=4){
+    uscita=0;
+    printf("\nTimbra inserendo nome e password ====> 1");
+    printf("\nInserisci un nuovo utente ====> 2");
+    printf("\nCambia password ====> 3");
+    printf("\nEsci dal programma ====> 4");
+    printf("\nInserisci la tua scelta: ");
+    scanf("%d",&scelta);
+    fflush(stdin);
+    if(scelta==1){
+        i=0;
+        printf("\nInserisci il nome: ");
+        gets(temp);
+        while(uscita==0){
+            if(strcmp(tabellone[i].nome,temp)==0){
+                printf("\nInserisci la tua password: ");
+                gets(temp);
+                if(strcmp(temp,tabellone[i].password)==0){
+                    printf("\nBenvenuto %s in azienda.",tabellone[i].nome);
+                }
+                else{
+                    printf("\nPASSWORD ERRATA");
+                }
+                uscita++;
+            }
+            else{
+                i++;
+            }
+        }
+    }
+    if(scelta==2){
+            printf("\nInserisci la password dell'amministratore: ");
+            gets(temp);
+            if(strcmp(temp,passwordadmin)==0){
+                printf("\nInserisci il nome del dipendente nuovo: ");
+                gets(appoggio.nome);
+                printf("\nInserisci la tua password: ");
+                gets(appoggio.password);
+                tabellone[cnt]=appoggio;
+                cnt++;
+                frontiera=cnt;
+                do{
+                    scambi=0;
+                    for(i=0;i<frontiera-1;i++){
+                        if(strcmp(tabellone[i].nome,tabellone[i+1].nome)>0){
+                            appoggio=tabellone[i];
+                            tabellone[i]=tabellone[i+1];
+                            tabellone[i+1]=appoggio;
+                            scambi++;
+                        }
+                    }
+                    frontiera--;
+                }while(scambi!=0);
+                f=fopen("timbri.txt","wb");
+                for(i=0;i<cnt;i++){
+                    fwrite(&tabellone[i],sizeof(struct utenti),1,f);
+                }
+                fclose(f);
+            }
+            else{
+                printf("\nPASSWORD AMMINISTRATORE ERRATA");
+            }
+    }
+    if(scelta==3){
+        i=0;
+        printf("\nInserisci il nome: ");
+        gets(temp);
+        while(uscita==0){
+            if(strcmp(tabellone[i].nome,temp)==0){
+                printf("\nInserisci la password nuova: ");
+                gets(temp);
+                strcpy(tabellone[i].password,temp);
+                uscita++;
+                f=fopen("timbri.txt","wb");
+                for(i=0;i<cnt;i++){
+                    fwrite(&tabellone[i],sizeof(struct utenti),1,f);
+                }
+                fclose(f);
+                f=fopen("timbri.txt","rb");
+                while(feof(f)==0){
+                    fread(&tabellone[cnt],sizeof(struct utenti),1,f);
+                    if(feof(f)==0){
+                    cnt++;
+                    }
+
+                }
+            fclose(f);
+            }
+            else{
+                i++;
+            }
+
+        }
+
+    }
+    }
+}
